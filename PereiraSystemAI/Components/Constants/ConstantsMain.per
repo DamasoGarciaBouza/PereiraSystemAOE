@@ -1,0 +1,284 @@
+; CONSTANTS 1 TO 50
+(defconst randomNumber 1)
+
+(defconst weMovedPlace 2) ;for experimental move to the coast tactic
+(defconst weHaveTownCenterAndWoodForLC 3)
+(defconst weHaveBarracksAndSomeVillagers 4)
+(defconst weHaveArcheryOrStableAndSomeSoldiers 5)
+
+(defconst populationRoomBeforeBuildingHouses 6); NEED TO USE IT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(defconst lumberCampDistanceIncrement 7); 
+(defconst miningCampDistanceIncrement 8); 
+
+(defconst avoidBuildingDocks 10)
+(defconst avoidCreatingNavy 11)
+(defconst weStoppedLumberjacks 12)
+
+
+(defconst secondsUntilFirstAttack 20)
+(defconst minutesUntilFirstAttack 21); for info only
+(defconst weAreAttacking 22)
+(defconst minArmySize 24)
+(defconst maxArmySize 25)
+(defconst numberAttackGroups 26)
+
+
+
+(defconst deletingBarracks 30)
+(defconst deletingStable 31)
+(defconst deletingArchery 32)
+(defconst deletingSiege 33)
+
+(defconst civilianMessages 49)
+(defconst militaryMessages 50)
+
+(defrule
+  (true)
+=>
+  (set-goal deletingBarracks 0)
+  (set-goal deletingStable 0)
+  (set-goal deletingArchery 0)
+  (set-goal deletingSiege 0)
+  (set-goal weAreAttacking 0)
+  (disable-self)
+)  
+
+
+(defrule
+  (population-cap <= 250)
+  =>
+  (set-goal lumberCampDistanceIncrement 1)
+  (set-goal miningCampDistanceIncrement 4)
+  (disable-self)
+)
+
+(defrule
+  (population-cap > 250)
+  =>
+  (set-goal lumberCampDistanceIncrement 2)
+  (set-goal miningCampDistanceIncrement 8)
+  (disable-self)
+)
+
+(defrule
+  (population-cap > 400)
+  =>
+  (set-goal lumberCampDistanceIncrement 4)
+  (set-goal miningCampDistanceIncrement 16)
+  (disable-self)
+)
+
+; AVOID DOCKS - 10
+(defrule
+  (or
+    (or
+      (or(map-type acropolis)(map-type acropolis)); alpine lakes doesnt work
+      (or(map-type arabia)(map-type atacama))
+    )
+    (or
+      (or(map-type baltic)(map-type black-forest))
+      (or(map-type bog-islands)(map-type budapest))
+    )
+  )  
+=>
+  (set-goal avoidBuildingDocks 1)
+  (disable-self)
+)
+
+(defrule
+  (or
+    (or
+      (or(map-type cenotes)(map-type coastal))
+      (or(map-type coastal-forest)(map-type crater-lake))
+    )
+    (or
+      (or(map-type crossroads)(map-type arabia))
+      (or(map-type black-forest)(map-type cenotes))
+    )
+  )  
+=>
+  (set-goal avoidBuildingDocks 1)
+
+  (disable-self)
+)
+
+
+;--------------------
+
+(defrule
+  (true)
+  =>
+  (set-goal populationRoomBeforeBuildingHouses 3)
+  (disable-self)
+)
+
+
+; MIN ATTACK GP SIZE - 20
+(defrule
+  (population-cap == 50)
+  =>
+  (set-goal minArmySize 19)
+  (set-goal maxArmySize 20)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 75)
+  =>
+  (set-goal minArmySize 29)
+  (set-goal maxArmySize 30)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 100)
+  =>
+  (set-goal minArmySize 39)
+  (set-goal maxArmySize 40)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 125)
+  =>
+  (set-goal minArmySize 49)
+  (set-goal maxArmySize 50)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 150)
+  =>
+  (set-goal minArmySize 59)
+  (set-goal maxArmySize 60)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 175)
+  =>
+  (set-goal minArmySize 69)
+  (set-goal maxArmySize 70)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 200)
+  =>
+  (set-goal minArmySize 79)
+  (set-goal maxArmySize 80)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 225)
+  =>
+  (set-goal minArmySize 89)
+  (set-goal maxArmySize 90)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 250)
+  =>
+  (set-goal minArmySize 99)
+  (set-goal maxArmySize 100)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 275)
+  =>
+  (set-goal minArmySize 109)
+  (set-goal maxArmySize 110)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 300)
+  =>
+  (set-goal minArmySize 119)
+  (set-goal maxArmySize 120)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 350)
+  =>
+  (set-goal minArmySize 139)
+  (set-goal maxArmySize 140)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 400)
+  =>
+  (set-goal minArmySize 159)
+  (set-goal maxArmySize 160)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 450)
+  =>
+  (set-goal minArmySize 179)
+  (set-goal maxArmySize 180)
+  (disable-self)
+)
+
+(defrule
+  (population-cap == 500)
+  =>
+  (set-goal minArmySize 199)
+  (set-goal maxArmySize 200)
+  (disable-self)
+)
+
+
+
+; SECONDS UNTIL FIRST ATTACK ----------------
+; FIXED PART (ludicrous not recognized so its default)
+(defrule(true)=>(set-goal secondsUntilFirstAttack 3600)(disable-self))
+
+(defrule(map-size tiny)=>(set-goal secondsUntilFirstAttack 1080)(disable-self))
+
+(defrule(map-size small)=>(set-goal secondsUntilFirstAttack 1296)(disable-self))
+
+(defrule(map-size medium)=>(set-goal secondsUntilFirstAttack 1512)(disable-self))
+
+(defrule(map-size normal)=>(set-goal secondsUntilFirstAttack 1800)(disable-self))
+
+(defrule(map-size large)=>(set-goal secondsUntilFirstAttack 1920)(disable-self))
+
+(defrule(map-size giant)=>(set-goal secondsUntilFirstAttack 1920)(disable-self))
+
+; POPULATION PART
+(defrule
+  (population-cap >= 250)
+=>
+  (up-modify-goal secondsUntilFirstAttack g:+ 600)
+  (disable-self)
+)
+
+
+
+;+ RANDOM PART
+(defrule
+  (true)
+=>
+  (generate-random-number 600)
+  (up-get-fact random-number 0 randomNumber)
+  (up-modify-goal secondsUntilFirstAttack g:+ randomNumber)
+  (disable-self)
+)
+
+(defrule
+  (true)
+=>
+  (set-goal deletingBarracks 0)
+  (set-goal deletingStable 0)
+  (set-goal deletingArchery 0)
+  (set-goal deletingSiege 0)
+  (set-goal weAreAttacking 0)
+  (disable-self)
+)  

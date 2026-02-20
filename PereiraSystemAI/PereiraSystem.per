@@ -1,0 +1,51 @@
+; PEREIRA SYSTEM AI - AGE OF EMPIRES II DEFINITIVE
+
+; CONSTANTS - 7 FILES
+(load "PereiraSystemAI/Components/Constants/ConstantsMain");1 to 50
+(load "PereiraSystemAI/Components/Constants/ConstantsCivCharacteristics");50 to 70
+(load "PereiraSystemAI/Components/Constants/ConstantsFacts");70 to 120
+(load "PereiraSystemAI/Components/Constants/ConstantsBuilding");120 to 170
+(load "PereiraSystemAI/Components/Constants/ConstantsCosts");300 to 350
+(load "PereiraSystemAI/Components/Constants/ConstantsDetecting");350 to 380
+(load "PereiraSystemAI/Components/Constants/ConstantsTraining");380 to 512
+
+; STRATEGIC NUMBERS - 2 FILES
+(load "PereiraSystemAI/Components/StrategicNumbers/Civilian_SN")
+(load "PereiraSystemAI/Components/StrategicNumbers/Exploring_SN")
+(load "PereiraSystemAI/Components/StrategicNumbers/Military_SN")
+
+; GAME VARIABLES (MAP TYPE, DIFFICULTY - (MAP SIZE IN BUILDING WALL SECTION))
+(load "PereiraSystemAI/Components/GameVariables/Difficulty")
+
+; BUILDING ACTIONS - 2 FILES
+(load "PereiraSystemAI/Components/Building/BuildingMain")
+(load "PereiraSystemAI/Components/Building/BuildingWall")
+
+; OTHER IMPORTANT ACTIONS - 4 FILES
+(load "PereiraSystemAI/Components/Detecting")
+(load "PereiraSystemAI/Components/Training")
+(load "PereiraSystemAI/Components/Researching")
+(load "PereiraSystemAI/Components/Trade")
+
+
+; TIMERS -2 FILES
+(load "PereiraSystemAI/Components/Timers/Timers_civilian")
+(load "PereiraSystemAI/Components/Timers/Timers_military")
+
+; OTHER - 3 FILES
+; PLAYER NAMES, TAUNTS
+(load "PereiraSystemAI/Components/PlayerNames")
+(load "PereiraSystemAI/Components/TauntsA_Emission")
+(load "PereiraSystemAI/Components/TauntsB_Response")
+(load "PereiraSystemAI/Components/Testing")
+
+
+; I use the cheat for making things faster sometimes
+(defrule (true)
+    (cheats-enabled)
+=>
+    (up-cc-send-cheat "AEGIS")
+    (disable-self)
+)
+
+

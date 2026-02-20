@@ -1,0 +1,156 @@
+; CIVILIAN TIMERS 1 TO 25
+; TIMER 1 INCREASES TOWN SIZE
+(defrule(false)=>(enable-timer 1 720)(disable-self))
+(defrule
+	(timer-triggered 1)
+=>
+	(disable-timer 1)
+    (enable-timer 1 140)  ;120 before
+    (up-modify-sn sn-maximum-town-size c:+ 1)
+    (up-modify-sn sn-minimum-town-size c:+ 1)
+    (up-chat-data-to-self "Town size max increased = %d" s: sn-maximum-town-size)
+    (up-chat-data-to-self "Town size min increased = %d" s: sn-minimum-town-size)
+)
+; TIMER 2 INCREASES LUMBER CAMPS QUANTITY
+(defrule(building-type-count lumber-camp > 0)=>(enable-timer 2 240)(disable-self))
+(defrule
+	(timer-triggered 2)
+=>
+	(disable-timer 2)
+    (enable-timer 2 240)
+    (up-modify-goal maxLumberCampsQty c:+ 1)
+    ;(up-chat-data-to-self "Lumber camps max qty increased = %d" g: maxLumberCampsQty)
+)
+; TIMER 3 INCREASES LUMBER CAMPS DISTANCE FAST WHEN WE HAVE NONE
+(defrule(true)=>(enable-timer 3 320)(disable-self))
+(defrule
+	(timer-triggered 3)
+=>
+	(disable-timer 3)
+    (enable-timer 3 25)
+    (up-modify-sn sn-lumber-camp-max-distance c:+ 1)
+    ;(up-chat-data-to-self "NO LCs! - Lumber camps max distance increased = %d" s: sn-lumber-camp-max-distance)
+)
+(defrule
+	(building-type-count-total lumber-camp > 0)
+=>
+	(disable-timer 3)
+    (enable-timer 4 90)
+    (disable-self)
+)
+; TIMER 4 INCREASES LUMBER CAMPS DISTANCE SLOWLY AFTER BUILDING ONE
+
+
+(defrule
+	(timer-triggered 4)
+=>
+	(disable-timer 4)
+    (enable-timer 4 110) 
+    (up-modify-sn sn-lumber-camp-max-distance g:+ lumberCampDistanceIncrement)
+    (up-chat-data-to-self "Lumber camps max distance increased = %d" s: sn-lumber-camp-max-distance)
+)
+
+
+; TIMER 5 INCREASES MINING CAMPS QUANTITY
+(defrule(building-type-count mining-camp > 0)=>(enable-timer 5 180)(disable-self))
+(defrule
+	(timer-triggered 5)
+=>
+	(disable-timer 5)
+    (enable-timer 5 600) ;was 240
+    (up-modify-goal maxMiningCampsQty c:+ 1)
+    ;(up-chat-data-to-self "Mining camps max qty increased = %d" g: max-mining-camps-qty)
+)
+; TIMER 6 INCREASES MINING CAMPS DISTANCE (FAST THEN SLOWER)
+(defrule(current-age == feudal-age)=>(enable-timer 6 60)(disable-self))
+(defrule
+	(timer-triggered 6)
+=>
+	(disable-timer 6)
+    (enable-timer 6 240)
+    (up-modify-sn sn-mining-camp-max-distance g:+ miningCampDistanceIncrement)
+    ;(up-chat-data-to-self "Mining camps max distance increased = %d" s: sn-mining-camp-max-distance)
+)
+
+; TIMER 7 INCREASES MILL QUANTITY
+(defrule(building-type-count mill > 2)=>(enable-timer 7 180)(disable-self))
+(defrule
+	(timer-triggered 7)
+=>
+	(disable-timer 7)
+    (enable-timer 7 120) 
+    (up-modify-goal maxMillsQty g:+ 1)
+    ;(up-chat-data-to-self "Mills max qty increased = %d" g: maxMillsQty)   
+)
+
+
+; TIMER 10 - DELETES VILLAGERS
+(defrule(true)=>(enable-timer 10 1200)(disable-self))
+(defrule(false)
+    (timer-triggered 10)
+    (current-age == imperial-age)(building-type-count town-center > 0)
+    (civilian-population > 45)
+=>
+	(chat-local-to-self "DELETING IDLE VILLAGERS!")
+	(disable-timer 10)
+    (enable-timer 10 150)
+    (up-delete-idle-units idle-type-villager)
+)
+
+; TIMER 11 - DELETES CARTS
+(defrule(true)=>(enable-timer 11 1200)(disable-self))
+(defrule
+    (timer-triggered 11)
+=>
+	(chat-local-to-self "DELETING IDLE CARTS!")
+	(disable-timer 11)
+    (enable-timer 11 150)
+    (up-delete-idle-units idle-type-trade-cart)
+)
+
+
+; INCREASE OTHER BUILDINGS QTY
+(defrule
+    (or(current-age == imperial-age)(cheats-enabled))
+    =>
+    (up-modify-goal barracksQty c:+ 2)
+    (up-modify-goal archeryRangeQty c:+ 2)
+    (up-modify-goal stableQty c:+ 2)
+    (up-modify-goal siegeWorkshopQty c:+ 1)
+    (up-modify-goal castleQty c:+ 2)    
+    (enable-timer 15 60)
+    (disable-self)
+)
+
+(defrule
+	(timer-triggered 15)
+=>
+	(disable-timer 15)
+    (enable-timer 15 2400)   
+    (up-modify-goal barracksQty c:+ 1)
+    (up-modify-goal archeryRangeQty c:+ 1)
+    (up-modify-goal stableQty c:+ 1)
+    (up-modify-goal siegeWorkshopQty c:+ 1)
+    (up-modify-goal castleQty c:+ 1)
+)
+
+
+
+;INCREASE DISTANCE
+(defrule
+    (or(current-age == imperial-age)(cheats-enabled))
+    =>
+    (up-modify-goal militaryBuildingsDistance c:+ 8)
+    (enable-timer 20 60)
+    (disable-self)
+)
+
+(defrule
+	(timer-triggered 20)
+=>
+	(disable-timer 20)
+    (enable-timer 20 600)
+    (up-modify-goal militaryBuildingsDistance c:+ 4)      
+)
+
+

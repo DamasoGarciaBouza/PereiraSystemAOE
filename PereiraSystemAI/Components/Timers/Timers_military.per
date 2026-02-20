@@ -1,0 +1,258 @@
+(defrule
+    (true)
+=>
+    (up-chat-data-to-player my-player-number "SECONDS UNTIL FIRST ATTACK %d" g: secondsUntilFirstAttack)
+    (disable-self)
+)
+
+; ATTACK TIMER 21
+(defrule
+    (up-players-in-game enemy > 0)
+    (or
+        (or
+            (game-time g:> secondsUntilFirstAttack)
+            (and(wood-amount > 100000)(food-amount > 100000))
+        )
+        (and
+            (cheats-enabled)
+            (game-time > 900)
+                
+        )
+    )
+=>
+    (enable-timer 21 00)
+    (chat-to-player my-player-number "ATTACK CONDITIONS HAVE BEEN MET!")
+    (disable-self)
+)
+
+; ATTACK!
+(defrule
+    (population-cap >= 150)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 59)
+    (set-strategic-number sn-maximum-attack-group-size 60)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 175)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 69)
+    (set-strategic-number sn-maximum-attack-group-size 70)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 200)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 79)
+    (set-strategic-number sn-maximum-attack-group-size 80)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 225)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 89)
+    (set-strategic-number sn-maximum-attack-group-size 90)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 250)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 99)
+    (set-strategic-number sn-maximum-attack-group-size 100)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 275)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 109)
+    (set-strategic-number sn-maximum-attack-group-size 110)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 300)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 119)
+    (set-strategic-number sn-maximum-attack-group-size 120)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 350)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 139)
+    (set-strategic-number sn-maximum-attack-group-size 140)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 400)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 159)
+    (set-strategic-number sn-maximum-attack-group-size 160)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 450)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 179)
+    (set-strategic-number sn-maximum-attack-group-size 180)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+(defrule
+    (population-cap >= 500)
+    (timer-triggered 21)
+=>
+    (set-strategic-number sn-minimum-attack-group-size 199)
+    (set-strategic-number sn-maximum-attack-group-size 200)
+    (set-strategic-number sn-number-attack-groups 2)
+    (up-chat-data-to-self "MIN ARMY SIZE: %d" s: sn-minimum-attack-group-size)
+    (disable-self)
+)
+
+
+
+;-----------------
+
+(defrule
+    (current-age == imperial-age)
+    (food-amount > 1200)
+    (timer-triggered 21)
+    (up-players-in-game enemy > 0)
+    (military-population > minArmySize)
+=>
+	(disable-timer 21)
+    (enable-timer 21 30)
+    (set-strategic-number sn-target-player-number 0)   
+    (set-strategic-number sn-percent-attack-soldiers 100)
+    (set-goal weAreAttacking 1)
+    (attack-now)
+    (chat-to-allies "31 Attack!");do not comment this line!!!
+    (chat-to-player my-player-number "ATTACK!")
+)
+
+; RETREAT
+(defrule
+    (game-time > 1800)
+	(up-players-in-game enemy > 0)
+    (military-population g:< minArmySize)
+    (players-building-type-count focus-player castle > 0)
+=>
+    (up-retreat-now)
+    (chat-to-allies "45 I Have No Soldiers To Destroy A Castle!")
+    (chat-local-to-self "<<< RETREAT!")
+)
+
+
+
+
+; TRYING TO DELETE FIRST MILITARY BUILDINGS
+; --------------------------------------------------------
+
+
+(defrule
+    (or(current-age == imperial-age)(cheats-enabled))
+=>
+    (enable-timer 22 120)
+    (enable-timer 23 120)
+    (enable-timer 24 120)
+    (enable-timer 25 120)
+    (disable-self)
+)
+
+(defrule
+    (up-compare-goal militaryBuildingsDistance g:< 460)
+    (goal weAreAttacking 1)
+    (timer-triggered 22)
+    (wood-amount > 2000)
+    (building-type-count-total barracks g:== barracksQty)
+    (building-type-count-total barracks > 3)
+=>
+    (delete-building barracks)
+    (chat-to-player my-player-number "DELETING BARRACKS")
+    (up-modify-goal militaryBuildingsDistance c:+ 6)     
+    (disable-timer 22)
+    (enable-timer 22 120)
+)
+
+(defrule
+    (up-compare-goal militaryBuildingsDistance g:< 460)
+    (goal weAreAttacking 1)
+    (timer-triggered 23)
+    (wood-amount > 2000)
+    (building-type-count-total stable g:== stableQty)
+    (building-type-count-total stable > 3)
+=>
+    (delete-building stable)
+    (chat-to-player my-player-number "DELETING STABLES")
+    (up-modify-goal militaryBuildingsDistance c:+ 6)
+    (disable-timer 23)
+    (enable-timer 23 120)    
+)
+
+(defrule
+    (up-compare-goal militaryBuildingsDistance g:< 460)
+    (goal weAreAttacking 1)
+    (timer-triggered 24)
+    (wood-amount > 2000)
+    (building-type-count-total archery-range g:== archeryRangeQty)
+    (building-type-count-total archery-range > 3)
+=>
+    (delete-building archery-range)
+    (chat-to-player my-player-number "DELETING ARCHERY RANGE")
+    (up-modify-goal militaryBuildingsDistance c:+ 6)
+    (disable-timer 24)
+    (enable-timer 24 120)    
+)
+
+(defrule
+    (up-compare-goal militaryBuildingsDistance g:< 460)
+    (goal weAreAttacking 1)
+    (timer-triggered 25)
+    (wood-amount > 2000)
+    (building-type-count-total siege-workshop g:== siegeWorkshopQty)
+    (building-type-count-total siege-workshop > 3)
+=>
+    (delete-building siege-workshop)
+    (chat-to-player my-player-number "DELETING SIEGE WORKSHOP")
+    (up-modify-goal militaryBuildingsDistance c:+ 6)
+    (disable-timer 25)
+    (enable-timer 25 120)      
+)

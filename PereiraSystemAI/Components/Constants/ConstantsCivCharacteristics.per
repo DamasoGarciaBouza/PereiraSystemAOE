@@ -1,0 +1,23 @@
+; CIV CHARACTERISTICS CONSTANTS: 50 TO 60?
+(defconst civNeedsArchersSoon 50)
+(defconst civNeedsCavalrySoon 51)
+(defconst civNeedsMonastery 52)
+(defconst civHasGunpowderBonus 53)
+
+(defrule
+    (or
+        (or(civ-selected aztec)(civ-selected mayan))
+        (or(civ-selected italian)(civ-selected korean))
+    )
+=>
+    (set-goal civNeedsArchersSoon 1)(disable-self)
+)
+
+(defrule
+    (or
+        (or(civ-selected bulgarians)(civ-selected bulgarians))
+        (or(civ-selected bulgarians)(civ-selected bulgarians))
+    )
+=>
+    (set-goal civNeedsCavalrySoon 1)(disable-self)
+)

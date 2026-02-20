@@ -1,0 +1,318 @@
+; HUNTING
+(defrule
+    (true)
+=>
+    (set-strategic-number sn-enable-boar-hunting 0)
+    (set-strategic-number sn-minimum-boar-lure-group-size 3)
+    (set-strategic-number sn-minimum-boar-hunt-group-size 6)
+    (set-strategic-number sn-minimum-number-hunters 6)
+    (set-strategic-number sn-object-repair-level 20547); wonder, castle, monastery, town-center, dock, towers, siege weapons
+    (disable-self)
+)
+
+(defrule
+    (unit-type-count-total villager > 7)
+=>
+    (set-strategic-number sn-enable-boar-hunting 1)
+    (disable-self)
+)
+
+; BUILDING
+(defrule
+    (true)
+=>
+    (set-strategic-number sn-initial-exploration-required 0)
+    ;(set-strategic-number sn-minimum-water-body-size-for-dock 3)
+    ;(set-strategic-number sn-dock-avoidance-factor 1000)
+    ;(set-strategic-number sn-dock-proximity-factor 10)
+    ;(set-strategic-number sn-dock-placement-mode 1)
+    (set-strategic-number sn-placement-zone-size 1);change with monastery
+    (disable-self)
+)
+
+; EXTRA BUILDERS
+(defrule
+    (true)
+=>
+    (up-assign-builders c: dock c: 2)
+    (up-assign-builders c: monastery c: 3)
+    (up-assign-builders c: archery-range c: 1)
+    (up-assign-builders c: stable c: 1)
+    (up-assign-builders c: market c: 1)
+    (up-assign-builders c: blacksmith c: 1)
+    (up-assign-builders c: university c: 1)
+    (up-assign-builders c: siege-workshop c: 1)
+    (up-assign-builders c: watch-tower c: 1)
+    (up-assign-builders c: guard-tower c: 1)
+    (up-assign-builders c: keep c: 2)
+    (up-assign-builders c: bombard-tower c: 2)
+    (up-assign-builders c: donjon c: 1)
+    (up-assign-builders c: castle c: 5)
+    (up-assign-builders c: town-center c: 3)
+    (up-assign-builders c: town-center-foundation c: 8)
+    ;(up-assign-builders c: stone-wall-line c: 2)
+    ;(up-assign-builders c: palisade-wall c: 2)
+    (disable-self)
+)
+
+(defrule ;for testing
+    (false)
+=>
+    (up-assign-builders c: stone-wall-line c: 10)
+    (up-assign-builders c: palisade-wall c: 10)
+    (disable-self)
+)
+
+(defrule
+    (current-age == castle-age)
+=>
+    (up-assign-builders c: house c: 2)
+    (up-assign-builders c: watch-tower c: 2)
+    (up-assign-builders c: guard-tower c: 2)
+    (disable-self)
+)
+
+(defrule
+    (unit-type-count villager > 40)
+=>
+    (up-assign-builders c: castle c: 8)
+    (up-assign-builders c: watch-tower c: 3)
+    (up-assign-builders c: guard-tower c: 3)
+    (up-assign-builders c: keep c: 3)
+    (up-assign-builders c: bombard-tower c: 3)
+    (disable-self)
+)
+
+; TOWN CENTER, TOWN SIZE AND
+(defrule
+    (true)
+=>
+    (set-strategic-number sn-town-center-placement 0)
+    (set-strategic-number sn-minimum-town-size 20)
+    (set-strategic-number sn-maximum-town-size 22)
+    (disable-self)
+)
+
+(defrule
+    (building-type-count barracks > 0)
+    (building-type-count stable > 0)
+    (building-type-count archery-range > 0)
+    (building-type-count monastery > 0)
+=>
+    (up-modify-sn sn-maximum-town-size c:+ 10)
+    (up-modify-sn sn-minimum-town-size c:+ 10)
+    (disable-self)
+)
+
+(defrule
+    (building-type-count siege-workshop > 0)
+=>
+    (up-modify-sn sn-maximum-town-size c:+ 10)
+    (up-modify-sn sn-minimum-town-size c:+ 10)
+    (disable-self)
+)
+
+(defrule
+    (building-type-count castle > 0)
+=>
+    (up-modify-sn sn-maximum-town-size c:+ 10)
+    (up-modify-sn sn-minimum-town-size c:+ 10)
+    (disable-self)
+)
+
+; DROPSITES AND DISTANCES
+; CANCEL SITE BUILDING IF DANGEROUS
+(defrule
+    (true)
+=>
+    (set-strategic-number sn-defer-dropsite-update 1)
+    (disable-self)
+)
+
+(defrule
+    (true)
+=>
+    (set-strategic-number sn-dropsite-separation-distance 2) ; DOESNT WORK AT ALL
+    (set-strategic-number sn-wood-dropsite-distance 4) ; DOESNT WORK, THEY STILL BUILD AT 3 DISTANCE DONT DELETE    
+    (set-strategic-number sn-allow-adjacent-dropsites 1) ;only works for (dropsite-min-distance wood > 0 or 1)
+    (set-strategic-number sn-required-forest-tiles 8)
+    (disable-self)
+)
+
+; CAMP MAX DISTANCES AT THE START
+(defrule
+    (true)
+=>
+    (set-strategic-number sn-lumber-camp-max-distance 24);  
+    (set-strategic-number sn-mining-camp-max-distance 24);
+    (set-strategic-number sn-mill-max-distance 12)
+    (disable-self)
+)
+
+(defrule
+    (enemy-buildings-in-town)
+=>
+    (up-modify-sn sn-mill-max-distance c:+ 16)
+    (set-strategic-number sn-lumber-camp-max-distance 38)    
+    (disable-self)
+)
+
+
+; INDUSTRIAL MODE LUMBER
+
+(defrule
+    (building-type-count-total lumber-camp > 3)
+=>
+    (set-strategic-number sn-maximum-wood-drop-distance 5)
+    ;(set-strategic-number sn-required-forest-tiles 8)
+    ;(chat-local-to-self ">>> Industrial lumber mode!")
+)
+
+(defrule
+    (building-type-count-total lumber-camp < 3)
+=>
+    (set-strategic-number sn-maximum-wood-drop-distance 9)
+)
+
+; PERCENT VILLAGER BUILDERS
+(defrule
+    (current-age == dark-age)
+=>
+    (set-strategic-number sn-percent-civilian-explorers 0)
+    (set-strategic-number sn-percent-civilian-builders 100)
+    (set-strategic-number sn-percent-civilian-gatherers 100)    
+    (disable-self)
+)
+
+(defrule
+    (current-age == imperial-age)
+=>
+    (set-strategic-number sn-percent-civilian-explorers 0)
+    (set-strategic-number sn-percent-civilian-builders 25)
+    (set-strategic-number sn-percent-civilian-gatherers 75)    
+    (set-strategic-number sn-cap-civilian-builders 40)
+    (disable-self)
+)
+
+; PERCENT GATHERERS AND DROP DISTANCES
+(defrule
+    (current-age == dark-age)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 68)
+    (set-strategic-number sn-wood-gatherer-percentage 32)
+    (set-strategic-number sn-gold-gatherer-percentage 0)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-self)
+)
+
+(defrule
+    (current-age == dark-age)
+=>
+    (set-strategic-number sn-maximum-hunt-drop-distance 22)
+    (set-strategic-number sn-maximum-food-drop-distance 9)
+    (set-strategic-number sn-maximum-wood-drop-distance 6);!!!!!!!!!!!
+    (set-strategic-number sn-maximum-gold-drop-distance 0)
+    (set-strategic-number sn-maximum-stone-drop-distance 0)
+    (disable-self)
+)
+
+(defrule
+    (current-age == dark-age)(civ-selected mongol)
+=>
+    (set-strategic-number sn-maximum-hunt-drop-distance 26)
+    (disable-self)
+)
+
+(defrule
+    (up-research-status c: feudal-age == research-pending)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 62)
+    (set-strategic-number sn-wood-gatherer-percentage 30)
+    (set-strategic-number sn-gold-gatherer-percentage 8) ;
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (set-strategic-number sn-maximum-gold-drop-distance 9)
+    (disable-self)
+)
+
+(defrule
+    (up-research-status c: castle-age == research-pending)
+=>
+
+    (set-strategic-number sn-maximum-hunt-drop-distance 0)
+    (disable-self)
+)
+
+(defrule
+    (current-age == castle-age)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 62)
+    (set-strategic-number sn-wood-gatherer-percentage 26)
+    (set-strategic-number sn-gold-gatherer-percentage 8)
+    (set-strategic-number sn-stone-gatherer-percentage 4)
+    (set-strategic-number sn-maximum-stone-drop-distance 9)
+    (chat-local-to-self "STONE MINING AVAILABLE????")
+    (up-chat-data-to-self "WOOD GATHER PERCENT: %d : %d" s: sn-wood-gatherer-percentage)
+    (up-chat-data-to-self "FOOD GATHER PERCENT: %d : %d" s: sn-food-gatherer-percentage)  
+    (disable-self)
+)
+
+(defrule
+    (current-age == imperial-age)(not(hold-relics))
+=>
+    (set-strategic-number sn-food-gatherer-percentage 66)
+    (set-strategic-number sn-wood-gatherer-percentage 14)
+    (set-strategic-number sn-gold-gatherer-percentage 10)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self  "Imperial Age With No Relics - Sending More Villagers For Gold")
+    (up-chat-data-to-self "WOOD GATHER PERCENT: %d" s: sn-wood-gatherer-percentage)
+    (up-chat-data-to-self "FOOD GATHER PERCENT: %d" s: sn-food-gatherer-percentage)  
+    (disable-self)
+)
+
+(defrule
+    (current-age == imperial-age)(hold-relics)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 66)
+    (set-strategic-number sn-wood-gatherer-percentage 14)
+    (set-strategic-number sn-gold-gatherer-percentage 6)
+    (set-strategic-number sn-stone-gatherer-percentage 14)
+    (chat-local-to-self "Imperial Age With All Relics - Sending Less Villagers For Gold")
+    (up-chat-data-to-self "WOOD GATHER PERCENT: %d" s: sn-wood-gatherer-percentage)
+    (up-chat-data-to-self "FOOD GATHER PERCENT: %d" s: sn-food-gatherer-percentage)  
+    (disable-self)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (up-compare-goal infantrySpam == 1)
+    (game-time > 3600)
+    (wood-amount > 60000)
+    (food-amount < 20000)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 72)
+    (set-strategic-number sn-wood-gatherer-percentage 8)
+    (set-strategic-number sn-gold-gatherer-percentage 6)
+    (set-strategic-number sn-stone-gatherer-percentage 14)
+    (chat-local-to-self "Imperial Age & Infantry Spam - Sending Less Villagers For Wood")
+    (up-chat-data-to-self "WOOD GATHER PERCENT: %d" s: sn-wood-gatherer-percentage)
+    (up-chat-data-to-self "FOOD GATHER PERCENT: %d" s: sn-food-gatherer-percentage)  
+    (disable-self)
+)
+
+
+
+
+
+(defrule
+    (current-age > dark-age)
+    (wood-amount g:< minimumWoodForLC)
+=>
+    (set-strategic-number sn-maximum-wood-drop-distance 40)
+)
+
+(defrule
+    (current-age > dark-age)
+    (wood-amount g:> minimumWoodForLC)
+=>
+    (set-strategic-number sn-maximum-wood-drop-distance 6)
+)

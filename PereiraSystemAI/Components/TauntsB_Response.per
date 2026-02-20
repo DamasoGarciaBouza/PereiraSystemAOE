@@ -1,0 +1,96 @@
+; RESPOND TO TAUNTS
+
+; ATTACK TAUNT 31
+(defrule
+	(taunt-detected any-ally 31)
+	(military-population >= 1)
+=>
+	(attack-now)
+	(acknowledge-taunt any-ally 31)
+	(set-goal weAreAttacking 1)
+    (chat-to-player this-any-ally "I´m Already Attacking!!")
+)
+
+; ASK FOR HELP TAUNT 48
+; REJECT
+(defrule
+	(taunt-detected any-ally 48)
+	(enemy-buildings-in-town)
+=>
+	(acknowledge-taunt any-ally 48)
+    (chat-to-allies "I Can´t Help You, Enemy Buildings In My Town!")
+)
+
+(defrule
+	(taunt-detected any-ally 48)
+	(town-under-attack)
+=>
+	(acknowledge-taunt any-ally 48)
+    (chat-to-allies "I Can´t Help You, Im Under Attack!")
+)
+
+(defrule
+	(taunt-detected any-ally 48)
+	(military-population == 0)
+=>
+	(acknowledge-taunt any-ally 48)
+    (chat-to-allies "I Can´t Help You, I Have No Soldiers Dude!")
+)
+
+; ACCEPT
+(defrule
+	(up-compare-goal weAreAttacking == 0)
+	(taunt-detected any-ally 48)
+=>
+	(acknowledge-taunt any-ally 48)
+    (set-strategic-number sn-task-ungrouped-soldiers 0)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1)
+	(set-strategic-number sn-number-attack-groups 1000)
+	(set-strategic-number sn-coop-share-attacking 1); maybe leave this always on? 	see military sn
+	;(set-strategic-number sn-target-player-number -1) ; doesnt work?
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(attack-now)
+	(enable-timer 42 1); start help-attack timer 42 in X seconds
+	(chat-to-allies "I will help!")
+)
+
+; HELP ATTACK TIMER TO REPEAT THE HELP ATTACK COMMAND
+(defrule 
+	(up-compare-goal weAreAttacking == 0)
+	(timer-triggered 42)
+=>
+	(attack-now)
+    (disable-timer 42)
+	(enable-timer 42 15); do help- attack every X seconds
+	(chat-to-allies "Helping!")
+)
+
+; DISABLE HELP TIMER
+(defrule
+	(timer-triggered 42)
+	(up-timer-status 43 == timer-disabled) 
+=>	
+    (enable-timer 43 120); stop the help-attack timer 42 with disable-help timer 43
+	(chat-to-allies "I will stop help in 120 seconds!")
+)
+
+(defrule 
+	(timer-triggered 43)
+=>
+	(disable-timer 42)
+	(up-retreat-now)
+	(set-strategic-number sn-target-player-number 0)
+	;(set-strategic-number sn-coop-share-attacking 0)
+    (chat-to-all "Stopping the help!")
+	(disable-timer 43)
+)
+
+; RETREAT TAUNT 45
+(defrule
+	(taunt-detected any-ally 45)
+=>
+	(acknowledge-taunt any-ally 45)
+	(chat-to-allies "Ok, We Retreat!")
+	(up-retreat-now)
+)
